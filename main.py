@@ -40,13 +40,47 @@ class BankAccount:
 
 
 def main() -> None:
-    alice = BankAccount("Alice")
-    bob = BankAccount("Bob", 25.0)
+    print("Create two bank accounts")
+    first_account = BankAccount(
+        input("First account owner: ").strip(),
+        float(input("First account starting balance: ")),
+    )
+    second_account = BankAccount(
+        input("Second account owner: ").strip(),
+        float(input("Second account starting balance: ")),
+    )
+    accounts = [first_account, second_account]
 
-    alice.deposit(100.0)
-    alice.transfer(30.0, bob)
-    print(f"{alice.owner}: ${alice.balance:.2f}")
-    print(f"{bob.owner}: ${bob.balance:.2f}")
+    while True:
+        print("\n1. Deposit\n2. Withdraw\n3. Transfer\n4. Show balances\n5. Exit")
+        choice = input("Choose an option: ").strip()
+
+        try:
+            if choice == "1":
+                account = accounts[int(input("Account (1 or 2): ")) - 1]
+                account.deposit(float(input("Deposit amount: ")))
+                print(f"New balance: ${account.balance:.2f}")
+            elif choice == "2":
+                account = accounts[int(input("Account (1 or 2): ")) - 1]
+                account.withdraw(float(input("Withdrawal amount: ")))
+                print(f"New balance: ${account.balance:.2f}")
+            elif choice == "3":
+                sender = accounts[int(input("Sender account (1 or 2): ")) - 1]
+                recipient = accounts[int(input("Recipient account (1 or 2): ")) - 1]
+                sender.transfer(float(input("Transfer amount: ")), recipient)
+                print("Transfer completed")
+            elif choice == "4":
+                for account in accounts:
+                    print(f"{account.owner}: ${account.balance:.2f}")
+            elif choice == "5":
+                print("Goodbye")
+                break
+            else:
+                print("Please choose an option from 1 to 5")
+        except (ValueError, IndexError):
+            print("Please enter valid account numbers, amounts, and balances")
+        except InsufficientFundsError as error:
+            print(f"Transaction declined: {error}")
 
 
 if __name__ == "__main__":
